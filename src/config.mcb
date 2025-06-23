@@ -1,0 +1,56 @@
+import ./dialog.mcbt
+import ./apply.mcbt
+
+function on_load minecraft:load{
+    # you can use MC-Build without its internal scoreboard but this will limit the available features
+    scoreboard objectives add mcb.internal dummy
+    scoreboard objectives add cancelmsg trigger
+    say Using EXPERIMENTAL Dialog configuration menu for Old Combat Datapack! There may be issues!
+}
+
+function on_tick minecraft:tick {
+    tellraw @a[scores={cancelmsg=1}] "Canceled changes."
+    scoreboard players reset @a cancelmsg
+}
+
+function show {
+    
+    menu generate oldcombatconfig {
+        @Title "Old Combat Configuration"
+        @Objective OldCombatSettings
+        @Type confirmation
+        
+        @Body {type:plain_message,contents:"Welcome to the WIP configuration dialog for Old Combat Datapack."}
+        @BooleanInput sblock score SwordBlocking "Sword Blocking"
+        @BooleanInput offhand score DisableOffhand "Disable Offhand"
+        @BooleanInput offhanditems score AllowOffhandForSomeItems "^ Allow Certain Offhand Items"
+        @BooleanInput cooldown score DisableAttackCooldown "Disable Attack Cooldown"
+        @BooleanInput damages score OldToolDamages "Old Tool Damages"
+        @BooleanInput sprintcrit score SprintCrits "Criticals while sprinting"
+        @BooleanInput kbresist score DisableKBResist "Disable Knockback Resistance"
+        @BooleanInput airkb score AirKB "Knockback Effective In Air"
+        @TextInput airkbforce AirKBForce 3 "^ Air Knockback Force"
+        @TextInput airkbmix AirKBMix 5 "^ Velocity mixing factor"
+        @BooleanInput rodkb score FishingRodKnockback "Fishing Rod Knockback"
+
+        <%%
+            configarray = "[" + idlist + "]"
+        %%>
+        @RawAction <%"yes"%> {label:"Ok",action:{type:"dynamic/run_command"}}
+        data modify storage dialog:dialogs oldcombatconfig.yes.action.template set value "function config:apply {settings:[<%idlist%>]}"
+        @RawAction <%"no"%> {label:"Cancel",action:{type:"run_command",command:"trigger cancelmsg"}}
+    }
+    
+    menu open @s oldcombatconfig
+}
+
+function apply {
+    $data modify storage config:temp settings set value $(settings)
+    @InitApply
+    @ApplyTo OldCombatSettings
+
+    REPEAT (scores) as score {
+        @Setting <%score%>
+    }
+}
+

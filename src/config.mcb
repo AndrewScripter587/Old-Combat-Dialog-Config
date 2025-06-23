@@ -5,10 +5,11 @@ function on_load minecraft:load{
     # you can use MC-Build without its internal scoreboard but this will limit the available features
     scoreboard objectives add mcb.internal dummy
     scoreboard objectives add cancelmsg trigger
-    say Using EXPERIMENTAL Dialog configuration menu for Old Combat Datapack! There may be issues!
+    say Using OldCombat Dialog Configuration Menu by AndrewGaming587
 }
 
 function on_tick minecraft:tick {
+    scoreboard players enable @a cancelmsg
     tellraw @a[scores={cancelmsg=1}] "Canceled changes."
     scoreboard players reset @a cancelmsg
 }
@@ -25,17 +26,46 @@ function show {
         @BooleanInput offhand score DisableOffhand "Disable Offhand"
         @BooleanInput offhanditems score AllowOffhandForSomeItems "^ Allow Certain Offhand Items"
         @BooleanInput cooldown score DisableAttackCooldown "Disable Attack Cooldown"
-        @BooleanInput damages score OldToolDamages "Old Tool Damages"
+        @BooleanInput damages score OldToolDamage "Old Tool Damages"
         @BooleanInput sprintcrit score SprintCrits "Criticals while sprinting"
         @BooleanInput kbresist score DisableKBResist "Disable Knockback Resistance"
         @BooleanInput airkb score AirKB "Knockback Effective In Air"
         @TextInput airkbforce AirKBForce 3 "^ Air Knockback Force"
         @TextInput airkbmix AirKBMix 5 "^ Velocity mixing factor"
         @BooleanInput rodkb score FishingRodKnockback "Fishing Rod Knockback"
+        @BooleanInput farrod score FurtherFishingBobber "Further Fishing Bobbers"
+        @TextInput farrodx FurtherFishingBobber.X 3 "^ Horizontal boost"
+        @TextInput farrody FurtherFishingBobber.Y 3 "^ Vertical boost"
+        @BooleanInput regen score OldRegen "Old Health Regeneration"
+        @TextInput regenrate regenRate 32 "^ Regeneration Rate"
+        @TextInput regenex RegenExhaustion 32 "^ Regeneration Exhaustion Gain"
+        @BooleanInput buffkb score BuffKB "Boost Damage Knockback"
+        @TextInput buffkbx BuffKBValue.X 5 "^ Horizontal Multiplier"
+        @TextInput buffkby BuffKBValue.Y 5 "^ Vertical Multiplier"
+        @BooleanInput buffkb score BuffSprintKB "^ Boost Sprint-Knockback Attack"
+        @TextInput buffkbsprx BuffKBValueSprint.X 5 "^^ Horizontal Multiplier"
+        @TextInput buffkbspry BuffKBValueSprint.Y 5 "^^ Vertical Multiplier"
+        @BooleanInput disablemodern score DisableModernPVPItems "Disable modern PVP-related items"
+        @BooleanInput disablenetherite score DisableNetheriteItems "Disable netherite"
+        @BooleanInput breakdisabled score BreakDisabledTools "Visually \"break\" disabled tools"
+        @BooleanInput returnmaterials score ReturnMaterialsOfDisabledItems "Return materials of some disabled items"
+        @BooleanInput shieldnerf score ShieldNerf "Nerf shields to pre-1.11 protection"
+        @BooleanInput disablesound score DisableAttackSounds "Disable sounds of attacks (not recommended)"
+        @BooleanInput disableswim score DisableSwimming "Disable swimming"
+        @BooleanInput oldsharp score OldSharpness "Old Sharpness Enchantment Damage"
+        @TextInput sharpbase SharpnessBase 32 "^ Base Damage"
+        @TextInput sharpboost SharpnessBoost 32 "^ Level Damage"
+        @BooleanInput oldtooltip score OldTooltips "Old Item Tooltips"
+        @BooleanInput bebobber score BedrockFishingBobberPhysics "Bedrock Edition Fishing Bobber Physics"
+        @BooleanInput oldbobbervel score OldFishingBobberVel "Old Fishing Bobber Velocity"
+        @BooleanInput oldhungersys score OldHungerSystem "Beta 1.7.3 Hunger System"
+        @BooleanInput oldfood score OldFood "Beta 1.7.3 Food Mechanics"
+        @BooleanInput oldai score OldMobAI "Old Mob AI (unstable)"
+        @BooleanInput wander score EnableWander "^ Affect mob wandering"
+        @BooleanInput farsight score MobFarsight "Mobs see further"
+        @BooleanInput oldtooltip score DisableCrits "Disable Critical Hits"
 
-        <%%
-            configarray = "[" + idlist + "]"
-        %%>
+        
         @RawAction <%"yes"%> {label:"Ok",action:{type:"dynamic/run_command"}}
         data modify storage dialog:dialogs oldcombatconfig.yes.action.template set value "function config:apply {settings:[<%idlist%>]}"
         @RawAction <%"no"%> {label:"Cancel",action:{type:"run_command",command:"trigger cancelmsg"}}

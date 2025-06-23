@@ -1,3 +1,3 @@
 # Generated with MC-Build
 
-$dialog show @s $(oldcombatconfig)
+$data modify storage dialog:dialogs oldcombatconfig.inputs append value {type:boolean,initial:$(initial),key:"farrod",label:"Further Fishing Bobbers"}
